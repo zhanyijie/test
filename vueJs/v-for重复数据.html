@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>循环-数据重复</title>
+		<script type="text/javascript" src="js/vue.js"></script>
+	</head>
+	<body>
+		<div id="box">
+			<button @click="add()">添加</button>
+			<h3>vue默认无法循环数组中的重复数据，添加track-by="$index"可解决</h3>
+			<ul>
+				<li v-for="item in arr" track-by="$index">{{item}}</li>
+			</ul>
+		</div>
+		<script type="text/javascript">
+			var vm=new Vue({
+				el:'#box',
+				data:{
+					arr:['苹果','香蕉','梨子']
+				},
+				methods:{
+					add:function(){
+						this.arr.unshift('苹果')
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

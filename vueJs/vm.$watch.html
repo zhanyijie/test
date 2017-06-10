@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>监听数据的变化</title>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<!--mvc框架必须先加载库文件，再加载html，然后加载获取dom/处理dom的js文件，不然先加载html时{{}}会露出来-->
+	</head>
+	<body>
+		<div>1.浅度监听：vm.$watch('监听对象'，function(){})</div>
+		<div id="box1">
+			<button type="button" @click="changeVal()">点击改变a值</button>
+			<div><p>{{a}}</p><p>{{b}}</p></div>
+		</div>
+		<br />
+		<br />
+		
+		<div>2.深度监听：vm.$watch('监听对象',function(){},{deep:true})</div>
+		<div id="box2">
+			<span>把对象转换成字符串的形式(a | json相当于 JSON.stringify)</span><br />
+			<span>{{a | json}}</span>
+			<br />
+			<button @click="changeVal()">改变对象属性值</button>
+		</div>
+		<script type="text/javascript">
+			var vm=new Vue({
+				el:'#box1',
+				data:{
+					a:1,
+					b:''
+				},
+				methods:{
+					changeVal:function(){
+						return this.a++
+					}
+				}
+			});
+			vm.$watch('a',function(){
+				alert('a值改变了');
+				this.b=this.a+1
+			});		
+			
+			var vm1=new Vue({
+				el:'#box2',
+				data:{
+					a:{name:'zhang',age:'25',sex:'男'},
+//					a:['a','b','c'],                          //数组可以直接用插值表达式显示，对象不行
+					b:''
+				},
+				methods:{
+					changeVal:function(){
+						this.a.name='wang'
+					}
+				}
+			});
+			vm1.$watch('a',function(){
+				alert('对象a的属性值发生变化了')
+			},{deep:true})
+			
+			
+		</script>
+	</body>
+</html>

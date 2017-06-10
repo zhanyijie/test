@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>vuejs-$http</title>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/vue-resource.js"></script>
+	</head>
+	<body>
+		<div id="box">
+			<button type="button" @click="get()">get方法请求</button>
+			<br />
+			<br />
+			<button type="button" @click="post()">post方式请求</button>
+			<br />
+			<br />
+			<button type="button" @click="jsonpPost()">跨域请求360搜索结果</button>
+			<br />
+			<br />
+			<button type="button" @click="jsonpPostbaidu()">跨域请求百度搜索结果</button>			
+		</div>
+		<div>拔jsonp接口:</div>
+		<div>在360好搜搜索框上输入'a',通过copyLinkAddress 获得请求的url(https://sug.so.360.cn/suggest?callback=suggest_so&word=a)</div>
+		<div>在浏览器上通过该url获得的jsonp数据为: suggest_so({q:"a",p:true,s:["爱奇艺","阿里巴巴批发网","阿里巴巴","acfun","a站","angelababy","a直播","安全教育平台","爱情保卫战","a4yy"]});</div>
+		<script type="text/javascript">
+			Vue.http.options.emulateJSON = true;
+			var c=new Vue({
+				el:'#box',
+				data:{
+					
+				},
+				methods:{
+					get:function(){
+						this.$http({
+							method:'GET',
+//							url:'data/$http.json',
+							url:'data/get.php',
+							data:{
+								a:'1',
+								b:'2'
+							}
+						}).then(
+							function(response){
+								alert(response.data)	
+							},function(response){
+								alert(response.status);
+							}
+						)
+					},
+					post:function(){												
+						this.$http({
+							method:'POST',
+							url:'data/post.php',
+							data:{
+								a:'1',
+								b:'20'								
+							},
+							options:{                    //Accept:application/json,  变为content-type：application/x-www-form-urlencode的formData字符串形式
+								emulateJSON:true
+							}
+						}).then(function(response){
+							alert(response.data);
+						})
+					},
+					jsonpPost:function(){
+						this.$http.jsonp('https://sug.so.360.cn/suggest',{
+							word:'a'
+						},{
+							jsonp:'callback'              //默认为callback, callback=suggest_so
+						}).then(
+							function(res){
+								alert(res.data.s[0])
+							},
+							function(res){
+								alert(res.data)
+							}
+						)
+					},
+//请求的url： https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=a&cb=jQuery1102009049614515977744_1495633393632&_=1495633393635	
+//返回的jsonp数据: jQuery1102009049614515977744_1495633393632({q:"a",p:false,s:["爱奇艺","安卓模拟器","airbnb","阿里巴巴批发网","acfun","阿里云","安居客","爱情公寓","爱奇艺网","暗黑3"]})
+					jsonpPostbaidu:function(){
+						this.$http.jsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',{
+							wd:'a'
+						},{
+							jsonp:'cb'              //默认为callback, cb=jQuery1102009049614515977744_1495633393632&_=1495633393635
+						}).then(
+							function(res){
+								alert(res.data.s[0])
+							},
+							function(res){
+								alert(res.data)
+							}
+						)
+					}
+				}
+			})
+		</script>		
+	</body>
+</html>

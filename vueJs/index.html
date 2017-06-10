@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>vuejs指令</title>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<!--mvc框架必须先加载库文件，再加载html，然后加载获取dom/处理dom的js文件，不然先加载html时{{}}会露出来-->
+	</head>
+	<body>
+		
+		<h3>1表达式：</h3>
+		<div id="box">{{msg}}</div>
+		<br />
+		<br />
+		<br />
+		
+		<h2>指令</h2>
+		<h3>2.1循环数组v-for(ng-repeat)</h3>
+		<div id="box2">
+			<div><span>"{{}}" 表达式形式输出数组：</span>{{arr}}</div>
+			<div>
+				<p>循环输出数组:</p>
+				<ul>
+					<li v-for="item in arr">{{item}}</li>
+				</ul>
+			</div>
+		</div>
+		
+		<h3>2.2循环对象</h3>
+		<div  id="box3">
+			<div><span>"{{}}"表达式形式输出对象：</span>{{obj}}</div>
+			<p>循环输出对象的第一种方式:(item in obj)</p>
+			<ul>
+				<li v-for="item in obj">{{item}}+{{$index}}+{{$key}}</li>
+			</ul>
+			<p>循环输出对象的第二种方式:[(k,v) in obj]</p>
+			<ul>
+				<li v-for="(k,v) in obj">{{k}}+{{v}}+{{$index}}+{{$key}}</li>
+			</ul>
+			
+			<h3>2.3事件v-on:click=""</h3>
+			<p>msg:{{msg}}</p>
+			<input type="button" v-on:click="msg=2" value="改变msg" />      
+			<button v-on:click="alert(1)">事件按钮2错误方式</button>                <!--v-on:click="alert(1)" vue会把alert(1)当做参数为1的函数-->
+			<button v-on:click="show()">事件按钮3</button>
+			
+			<h3>2.3.1事件-数组push</h3>
+			<input type="text" placeholder="请输入要添加的水果名称" v-model="fruit" />
+			<button v-on:click="add()">数组push</button>
+			<ul>
+				<li v-for=" item in arr">{{item}}</li>
+			</ul>	
+		
+			<h3>3 v-show</h3>
+			<p>显示隐藏：<input type="checkbox" v-model="show" /></p>
+			<div style="width: 50px; height: 50px; background: pink;" v-show="show"></div>
+		</div>
+		<script type="text/javascript">
+			var mv1=new Vue({
+				el:'#box',                   //选择器（标签 class id 都是可以的 ） 
+				data:{                       //不像avalon，要包裹在data里面
+					msg:'hello!vue'
+				}
+				
+			});
+			var mv2=new Vue({
+				el:'#box2',
+				data:{
+					arr:['苹果','香蕉','橘子']
+				}
+			})
+			var mv3=new Vue({              //相当于angualr中的$scope
+				el:'#box3',
+				data:{              //数据
+					msg:1,
+					fruit:'',        //不像angualr中同过ng-model绑定的数据不需要再$scope中声明
+					show:false,
+					arr:['苹果','香蕉','橘子'],
+					obj:{a:'苹果',b:'香蕉',c:'梨子'}
+				},
+				methods:{          //方法
+					show:function(){
+						alert('事件绑定')
+					},
+					add:function(){
+//						data.arr.push('葡萄')
+//						arr.push('葡萄')
+						console.log(this);              	//指vue对象本身  Vue{}==angular中的$scope 
+						this.arr.push(this.fruit)            //是Vue.arr;不是data.arr
+//						mv3.arr.push(mv3.fruit)
+						
+					}
+				}
+			})			
+		</script>
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />			
+	</body>
+</html>

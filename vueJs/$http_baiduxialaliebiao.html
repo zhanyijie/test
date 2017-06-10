@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>百度下拉列表</title>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript" src="js/vue-resource.js"></script>
+		<style>
+			.gray{
+				background: #CCCCCC;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<input type="text" v-model='t1' @keyup="jsonpPost($event)" @keydown.down="changeDown()" @keydown.up.prevent="changeUp()"/>
+			<ul>
+				<li v-for="value in myData" :class="{gray:$index==nowIndex}">{{value}}</li>
+			</ul>
+			<div v-show="myData.length==0">暂无数据......</div>
+		</div>
+		<br />
+		<br />
+		<br />
+		
+		<h3>技术要点:</h3>
+		<div>1.keyup 手指抬起一次就请求数据一次</div>
+		<div>2.keydown、keyup使键盘事件输入事件，一般用在input上,按上下键时，既能选中搜索列表中的当前行，输入框也是当前行的值<div>
+		<div>3.按键盘上下键选择数据时，同时也在执行keyup提交数据事件，如何阻止(在keyup中写一判断，如果是上下键则return不执行提交数据代码)</div>	
+		
+		<script type="text/javascript">
+			var c=new Vue({
+				el:'#box',
+				data:{
+					myData:[],
+					t1:'',
+					nowIndex:'-1'
+				},
+				methods:{
+					jsonpPost:function(evt){
+						if(evt.keyCode=='38' || evt.keyCode=='40') return;   //点击键盘上下键阻止keyup事件
+						if(evt.keyCode=='13'){                               //点击enter键连接到百度搜索页面 
+							window.open('https://www.baidu.com/s?wd='+this.t1);
+							this.t1=''
+						}
+						this.$http.jsonp('https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su',{
+							wd:this.t1
+						},{
+							jsonp:'cb'              //默认为callback, cb=jQuery1102009049614515977744_1495633393632&_=1495633393635
+						}).then(
+							function(res){
+								this.myData=res.data.s
+							},
+							function(res){
+								alert(res.data)
+							}
+						)
+					},
+					changeDown:function(){
+						if(this.nowIndex==(this.myData.length-1)) this.nowIndex=-1;
+						this.nowIndex++;
+						this.t1=this.myData[this.nowIndex];
+//						console.log(this.nowIndex)
+					},
+					changeUp:function(){
+						if(this.nowIndex<='0') this.nowIndex=(this.myData.length);
+						this.nowIndex--;
+						this.t1=this.myData[this.nowIndex];
+//						console.log(this.nowIndex);
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

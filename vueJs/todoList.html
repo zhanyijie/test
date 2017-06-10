@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Vue简易留言板</title>
+		<!--mvc框架必须先加载库文件，再加载html，然后加载获取dom/处理dom的js文件，不然先加载html时{{}}会露出来-->
+		<!--<script type="text/javascript" src="js/bootstrap.js"></script>-->
+		<link rel="stylesheet" href="css/bootstrap.css" />
+		<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+		<script type="text/javascript" src="js/bootstrap.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<script type="text/javascript">
+			window.onload=function(){
+				var c=new Vue({
+					el:"#box",
+					data:{
+						myData:[],
+						username:'',
+						age:'',
+						index:'',
+						warn:''
+					},
+					methods:{
+						add:function(){
+							if(this.username!=''&&this.age!=''){
+								this.myData.push({
+									username:this.username,
+									age:this.age
+								});
+								this.username='';
+								this.age=''							
+							}else{
+								alert('账号或年龄不得为空')
+							}
+
+						},
+						del:function(index){
+							if(index=='-2'){
+//								this.warn='确定删除全部数据吗？'
+								this.myData=[];
+							}else{
+//								this.warn='确定删除当前行吗？'
+								this.myData.splice(index,1);
+							}
+							
+						}
+					}
+				})
+			}
+		</script>
+	</head>
+	<body>
+	<h3>插播重要信息:form中的提交按钮一定要写成type=button,不然点击该按钮时会有默认的form提交执行，并且会刷新当前页面</h3>	
+	<div class="container" id="box">
+		<form class="form-horizontal">
+		  <div class="form-group">
+		    <label for="username" class="col-sm-2 control-label">用户名:</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="username" placeholder="请输入用户名" v-model="username">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label for="age" class="col-sm-2 control-label">年龄:</label>
+		    <div class="col-sm-10">
+		      <input type="text" class="form-control" id="age" placeholder="请输入年龄" v-model="age">
+		    </div>
+		  </div>
+		  <div class="form-group">
+		    <label  class="col-sm-2 control-label"></label>
+		    <div class="col-sm-10">
+		      <button type="button" class="btn btn-primary" v-on:click="add()">添加</button>   <button type="reset" class="btn btn-default">重置</button>
+		    </div>
+		  </div>		  
+		</form>	
+		
+		<table class="table table-hover table-striped table-bordered">
+			<caption class="h2 text-danger text-center">用户信息表</caption>
+			<tr class="text-info">
+				<th class="text-center">序号</th>
+				<th class="text-center">姓名</th>
+				<th class="text-center">年龄</th>
+				<th class="text-center">操作</th>
+			</tr>
+			<tr class="text-center" v-for="item in myData">
+				<td>{{$index+1}}</td>
+				<td>{{item.username}}</td>
+				<td>{{item.age}}</td>
+				<td><button class="btn btn danger btn-sm" data-toggle="modal" data-target="#myModal" v-on:click="index=$index,warn='确定删除当前行吗？'">删除</button></td>
+			</tr>
+			<tr class="text-center" v-show="myData.length!=0">
+				<td colspan="3"></td>
+				<td><button class="btn btn-danger btn-sm" v-on:click="index='-2',warn='确定删除全部数据吗？'" data-toggle="modal" data-target="#myModal">删除全部</button></td>
+			</tr>
+			<tr v-show="myData.length==0">
+				<td colspan="4" class="text-center text-muted">暂无数据......</td>
+			</tr>
+		</table>
+		<!--模态框-->   <!--role="dialog" aria-labelledby="myModalTitle" h4id一致增强模态框的可访问性-->
+		<div class="modal fade bs-example-modal-sm" id="myModal" role="dialog" aria-labelledby="myModalTitle">
+		    <!--窗口声明-->
+		    <div class="modal-dialog modal-sm" role="document">
+		        <!--内容声明-->
+		        <div class="modal-content">
+		            <div class="modal-header">
+		
+		                <button class="close" data-dismiss="modal" aria-label="Close"><span>&times;</span></button>
+		                <h4 class="modal-title" id="myModalTitle">确认框</h4>
+		            </div>
+		            <div class="modal-body">
+		               		{{warn}}
+		            </div>
+		            <div class="modal-footer">
+		                <button class="btn btn-primary" v-on:click="del(index)" data-dismiss="modal">确认</button>
+		                <button class="btn btn-default" data-dismiss="modal">取消</button>
+		            </div>
+		        </div>
+		    </div>
+		</div>
+	</div>	
+	</body>
+</html>

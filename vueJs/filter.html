@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>过滤器</title>
+		<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+
+	</head>
+	<body>
+		<div id="box">
+			<h3><span>filterBy和orderBy详解</span>http://www.tuicool.com/articles/BV36RjU</h3>
+			<input type="text" v-model="msg" />
+			<p>1.{{msg}}</p>
+			<p>2一次性表达式:{{*msg}}</p>
+			<p>3能转义成html形式的表达式{{{msg}}}</p>
+			<p>4过滤器</p>
+			<span>4.1大写</span>:{{'welcom' | uppercase}}
+			<br />
+			<span>4.2小写</span>:{{'WELCOM' | lowercase}}
+			<br />
+			<span>4.3首字母大写</span>:{{'welcom' |capitalize }}
+			<br />
+			<span>4.4美元</span>:{{12|currency}}
+			<span>4.5人民币</span>:{{12|currency '￥'}}
+			<span>4.6rmb</span>:{{12|currency 'rmb'}}
+			<br />
+			<span>插值表达式不能直接显示对象,把对象转换成字符串的形式(obj | json相当于 JSON.stringify)</span>
+			<span>{{obj | json}}</span>
+			<br />
+			<br />
+			<div>4.7延迟过滤器配合事件使用(debounce 2000)，相当于setTimeout()</div>
+			<!--<button @keyup="show()">keyup事件延迟</button>-->
+			<input type="text" @keyup="show() | debounce 2000" />
+			<br />
+			<br />
+			<div>5用于整合数据的过滤器</div>
+			<div>1限制位数.| limitBy 1 2(取几位 从哪个位置取)</div>
+			<ul>
+				<li v-for="item in arr | limitBy 1 2">{{item}}</li>
+			</ul>
+			<br />
+			<br />
+			<div>2字母过滤filterBy a</div>
+			<input type="text" v-model="a" placeholder="输入水果名称进行过滤"/>
+			<ul>
+				<li v-for="item in arr1 | filterBy a">{{item}}</li>
+			</ul>
+			
+			<div>3排序</div>
+			<table border="1" cellspacing="0" cellpadding="0">
+				<tr>				
+					<th><a href="javascript:void(0)" @click="Field='name',reverse=reverse==1?reverse=-1:reverse=1">编号</a></th>
+					<th><a href="javascript:void(0)" @click="Field='phone',reverse=reverse==1?reverse=-1:reverse=1">电话</a></th>
+					<th><a href="javascript:void(0)" @click="Field='cName',reverse=reverse==1?reverse=-1:reverse=1">中文名</a></th>
+				</tr>
+				<tr v-for=" friends in friends | orderBy Field reverse ">       <!--排序对象(要排序的字段)/排序方式-->
+					<td>{{friends.name}}</td>
+					<td>{{friends.phone}}</td>
+					<td>{{friends.cName}}</td>
+				</tr>
+			</table>	
+			<br />
+			<br />
+			<br />
+			<div>6自定义过滤器</div>
+			<div>{{b| toDou 1 2}}</div>
+			<div>自定义过滤器-时间转化器</div>
+			<div>new Date().getFullYear() :{{time}}</div>
+			<div>new Date(Date.now()) :{{time1  | date}}</div>
+			<br />
+			<br />
+			<br />			
+			<div>一般的过滤器只支持模型到-图时的过滤，现在要求 视图-模型阶段时也能过滤 有单项过滤器变为双向过滤器</div>
+			<div>view-model:<input type="text" v-model="value1" /></div>
+			<div>model-view:<span v-text="value1 | filterHtml"></span></div>
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />	
+			<!--<div></div>-->
+		</div>
+		<script type="text/javascript">
+			
+//			自定义过滤器
+			Vue.filter('toDou',function(string,a,b){  //toDou过滤器名称  string（过滤对象） a,b（参数）
+//				alert(a+','+b)                        //1,2
+				return string<10?'0'+string:string
+			});
+			Vue.filter('date',function(time){
+				var date=new Date(time);
+				return date.getFullYear()+'-'+(parseInt(date.getMonth())+1)+'-'+date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds()
+			})
+//			双向过滤器	
+			Vue.filter('filterHtml',{
+				read:function(value1){              //model-view
+//					alert(value1)
+					return value1.replace(/<.*>/g,'');
+				},
+				write:function(value1){            //view-model
+					alert(value1)
+				}
+			})
+			
+			var c=new Vue({
+				el:'#box',
+				data:{
+					msg:'abc',
+					arr:[1,2,3,4,5],
+					arr1:['苹果','香蕉','梨子','菠萝'],
+					a:'',
+					obj:{name:'zhang',age:'25',sex:'男'},
+					friends:[
+						{name:'a',phone:2222,cName:'张'},
+						{name:'c',phone:1111,cName:'李'},
+						{name:'b',phone:4444,cName:'王'},
+						{name:'d',phone:3333,cName:'马'}
+					],
+					Field:'name',
+					reverse:1,        //	true为升序
+					b:9,
+					time:new Date().getFullYear()+':'+(parseInt(new Date().getMonth())+1),
+					time1:Date.now(), //为一个时间戳
+					value1:'<strong>welcome</strong>'
+				},
+				methods:{
+
+				}
+			})
+		</script>
+	</body>
+</html>

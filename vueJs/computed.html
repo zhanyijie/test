@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>计算属性</title>
+		<script type="text/javascript" src="js/vue.js"></script>
+	</head>
+	<body>
+		<div>注:data和computed都只能放数据，但data中的数据 只能是固定的字符串、数组，对象。
+			<p>而computed中的数据可以是函数中return一个函数结果(一个有业务逻辑，另一个没有业务逻辑);</p>
+			<p>当然computed里面的get函数的业务逻辑仅限于一个数据是基于另一个数据的加减乘除，如果有更复杂的</p>
+			<p>业务逻辑建议用vm.$watch</p>
+		</div>
+		<div id="box">
+			<p>a:{{a}}</p>
+			<p>b:{{b}}</p>
+			<div><button @click="add()">点击改变a的值</button></div>
+			<div><button @click="setVal()">点击设置b的值</button></div>
+		</div>
+		<script type="text/javascript">
+			var vm=new Vue({        //vm对象为Vue的实例
+//				el:'#box',
+				data:{              //data属性(数据)
+					a:'1'
+				},
+				computed:{         //计算属性(return一个函数计算结果) 
+					b:{
+						get:function(){
+							return this.a+1
+						},
+						set:function(val){
+							alert(val);
+						}
+					}
+				},
+				methods:{
+					add:function(){
+						this.a++
+					},
+					setVal:function(){
+						this.b='100'
+					}
+				}
+			
+			});
+			vm.$mount('#box');                      //手动挂载
+			console.log(vm.$el);                    //返回js原生对象
+			vm.$el.style.background='red'
+			console.log(vm.$data);
+			
+		</script>
+	</body>
+</html>

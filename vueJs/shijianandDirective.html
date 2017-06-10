@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>指令-事件</title>
+		<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<style type="text/css">
+			.red{
+				color: red;
+				font-size: 20px;
+			}
+			.blue{
+				background: blue;
+				font-size: 20px;
+			}
+		</style>
+		<script type="text/javascript">
+			window.onload=function(){
+				var c=new Vue({
+					el:'#box',
+					data:{
+						click:'',
+						y:''
+					},
+					methods:{
+						show:function(evt){
+							this.click='v-on:click=show()/@click=show()';
+							this.y=evt.clientY;
+						}
+					}
+				});
+				var c1=new Vue({
+					el:'#box1',
+					data:{
+						url:'img/btn-fanghao.png',
+						width:'50',
+						height:'50',
+						title:"这是一张美丽的图片",
+//						classArr:['red','blue']
+						a:'red',
+						b:'blue',
+						obj:{
+							red:true,
+							blue:false
+						},
+//						style
+						c:{color:'red'},
+						d:{background:'blue'},
+						obj2:{
+							color:'red',
+							background:'blue'
+						}
+						
+					},
+					methods:{
+						show1:function(evt){
+							evt.cancelBubble=true;
+							alert('儿子')
+						},
+						show2:function(){
+							alert('父亲')
+						},
+						show0:function(){
+							alert('儿子')
+						},
+						show3:function(){
+							alert('右键阻止了系统默认的弹出刷新框')
+						},						
+					}
+				})
+			}
+		</script>
+	</head>
+	<body>
+		<div id="box">
+			<h3>1.事件简写</h3>
+			<button type="button" @click="show()">点击事件简写</button><span>{{click}}</span>
+			<h3>2.事件对象($event)</h3>
+			<button type="button" @click="show($event)">点击事件简写</button><span>evt.clientY:{{y}}</span>
+		</div>
+		<div id="box1">
+			<h3>事件对象-冒泡(子父级同时绑定同一个事件类型，点击子级同时执自己和父级的事件)</h3>
+			<div @click="show2()">
+				<button type="button" @click="show1($event)">阻止事件冒泡evt.cancelBubble=true;</button>
+				<button type="button" @click.stop="show0()">阻止事件冒泡@click.stop</button>
+			</div>
+			<h3>阻止默认事件</h3>
+			<div>								<!--或者evt.preventDefault-->					
+				<button @contextmenu.prevent="show3()">右键阻止了系统默认的弹出刷新框</button>
+			</div>
+			<div>
+				<!--<img src="{{url}}" alt="" />         会报错-->
+				<img v-bind:src="url" alt="图片" />
+				<p><span>属性简写形式:(:src)</span><img :src="url" alt="图片" /></p>
+			</div>
+			<div>
+				<span>width:(:width)</span><img :src="url" alt="图片" :width="width" :height="height" :title="title"/>
+			</div>
+			<div><span>class(class="[a,b]")</span><strong :class="[a,b]">数组class</strong></div>
+			<!--<div><span>style(:style)</span></div>-->
+			<div><span>class(:class="obj")</span><strong :class="obj">对象class</strong></div>
+			<div><span>class(:class="{red:false,blue:true}")</span><strong :class="{red:false,blue:true}">对象class</strong></div>
+			<br />
+			<br />
+			<br />
+			<div><span>style(style="[c,d]")</span><strong :style="[c,d]">数组style</strong></div>
+			<div><span>style(style="obj2")</span><strong :style="obj2">对象style</strong></div>
+		</div>
+	</body>
+</html>

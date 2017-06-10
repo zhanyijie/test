@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>自定义指令</title>
+		<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<style type="text/css">
+			.redbox{
+				width: 100px;
+				height: 100px;
+				background: red;
+				position: absolute;
+				left: 0;
+				top: 250px;
+			}
+			.bluebox{
+				background: blue;
+				top: 350px;
+			}
+		</style>
+	</head>
+	<body>
+		<div>指令:拓展html功能</div>
+		<div v-red>自定义指令(v-red)</div>
+		<br />
+		<br />
+		<br />
+		<div v-red="a">自定义指令传参(v-red="a")</div>
+		<br />
+		<br />
+		<br />
+		<div>自定义指令-拖拽</div>
+		<div v-drag :class="a"></div>
+		<div v-drag :class="[a,b]"></div>
+		
+		
+		<script type="text/javascript">
+			Vue.directive('red',function(a){
+//				$(this).css('background','red');
+				alert(a);                         //无障碍获取new Vue()的data里面的数据
+				this.el.style.background='red'
+			});
+//			自定义指令之拖拽
+			Vue.directive('drag',function(){
+				var oDiv=this.el;
+				oDiv.onmousedown=function(evt){
+					var dl=evt.clientX-oDiv.offsetLeft;
+					var dt=evt.clientY-oDiv.offsetTop;
+					document.onmousemove=function(evt){
+						oDiv.style.left=evt.clientX-dl+'px';
+						oDiv.style.top=evt.clientY-dt+'px';							
+					};
+					document.onmouseup=function(){
+						document.onmousemove=null;
+						document.onmouseup=null;
+//							this.onmousedown=null;   nmousedown=null就变成一次性事件了
+					}				
+				};
+			})
+			
+			var vm=new Vue({
+				el:'body',
+				data:{
+					a:'redbox',
+					b:'bluebox'
+				},
+				methods:function(){
+					
+				}
+			})
+		</script>
+	</body>
+</html>

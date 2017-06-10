@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>自定义键盘信息</title>
+		<script type="text/javascript" src="js/jquery-3.0.0.js"></script>
+		<script type="text/javascript" src="js/vue.js"></script>
+	</head>
+	<body>
+		<!--<button type="button" @onkeydown.up="show()">{{enter}}</button>-->
+		<div>只有有光标的输入框时才有键盘事件</div>
+		<div>keydown.up/down/a/b/c.....</div>
+		<br />
+		<br />
+		<br />		
+		<input type="text" @keydown.enter="show()" />
+		或者<input type="text" @keydown.13="show()" />
+		<script type="text/javascript">
+			document.onkeydown=function(evt){
+				alert('键码为'+evt.keyCode);
+			}
+			
+			
+			var vm=new Vue({
+				el:'body',
+				data:{
+					enter:'您按了enter键'
+				},
+				methods:{
+					show:function(){						
+						alert(this.enter);
+					},
+				}
+			})
+		</script>
+	</body>
+</html>

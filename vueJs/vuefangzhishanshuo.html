@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>vuejs防止闪烁</title>
+		<script type="text/javascript" src="js/vue.js"></script>
+		<!--mvc框架必须先加载库文件，再加载html，然后加载获取dom/处理dom的js文件，不然先加载html时{{}}会露出来-->
+		<style type="text/css">
+			 [v-cloak]{                   /*//属性选择器:模型中的数据还未从后台获取完成时,先让{{}}隐藏*/
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="box">
+			<h3>单个标签防止闪烁,防止看到{{}}</h3>
+			<p><span>用v-text代替{{}}</span><span v-text="t1"></span></p>
+			<p><span>用v-html代替'{{{''}}}'</span><span v-html="msg"></span></p>
+			<h3>大段落防止闪烁 v-cloak  style标签中'[v-cloak]{display: none;}'</h3>
+			<ul v-for="item in arr" v-cloak>
+				<li >{{item.name}}</li>
+				<li>{{item.age}}</li>
+				<li>{{item.sex}}</li>
+			</ul>
+		</div>
+		<script>
+			new Vue({
+				el:'#box',
+				data:{
+					arr:[
+						{name:'zhang',age:'20',sex:'男'},
+						{name:'wang',age:'22',sex:'男'},
+						{name:'liu',age:'23',sex:'女'}
+					],
+					t1:'wellcomeb vue',
+					msg:'<strong>转义</strong>'
+				}
+			})
+		</script>
+	</body>
+</html>
